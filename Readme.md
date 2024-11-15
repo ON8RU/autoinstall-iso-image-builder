@@ -1,5 +1,11 @@
 # ISO Image Builder for Autoinstall
 
+Dependencies install:
+
+```bash
+./env.install.sh
+```
+
 Usage example:
 
 ```bash
