@@ -16,11 +16,17 @@ autoinstall:
     hostname: ubuntu-24
     password: "$6$exDY1mhS4KUYCE/2$zmn9ToZwTKLhCw.b4/b.ZRTIZM30JZ4QrOQ2aOXJ8yk96xpcCof0kxKwuX1kqLG/ygbJ1f8wxED22bTL4F46P0"
     username: testuser
-  packages:
-    - xe-guest-utilities-latest
+  # packages:
+  #   - xe-guest-utilities
   ssh:
     allow-pw: true
     install-server: true
+
+# xen tools installation
+runcmd:
+  # - wget https://github.com/xenserver/xe-guest-utilities/releases/download/v8.4.0/xe-guest-utilities_8.4.0-1_amd64.deb -O /tmp/xe-guest-utilities_8.4.0-1_amd64.deb
+  - sudo dpkg -i /cdrom/server/xe-guest-utilities_8.4.0-1_amd64.deb
+
 
   # apt:
   #   disable_components: []

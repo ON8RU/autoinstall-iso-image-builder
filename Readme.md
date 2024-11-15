@@ -16,3 +16,9 @@ Usage example:
 ```
 
 After building iso image and MD5SUM has been placed into ./sources/[-iso]/dist directory
+
+File structure for webserver:
+
+- ROOT
+  - meta-data
+  - user-data
