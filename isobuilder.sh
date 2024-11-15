@@ -1,8 +1,15 @@
 #!/bin/bash
 
+title="AUTOINSTALL ISO (EFIBIOS)"
+webserver=""
+
 while [ -n "$1" ]
 do
 case "$1" in
+-webserver) webserver="$2"
+shift ;;
+-title) title="$2"
+shift ;;
 -iso) iso="$2"
 shift ;;
 -source) url="$2"
@@ -25,7 +32,14 @@ mkdir "./sources/$iso/dist" -p
 mkdir "./sources/$iso/unpacked/server" -p
 
 iso_source_basename=$(basename $url)
-gr_content=$(cat "./grub.rule.cfg")
+gr_content=$(cat "./grub.rule.cdrom.cfg")
+
+if [ -n "$webserver" ]; then
+  gr_webserver_content=$(cat "./grub.rule.webserver.cfg")
+  gr_webserver_content=${gr_webserver_content/__WEBSERVER_URL__/"$webserver"}
+  gr_content="${gr_webserver_content}"$'\n'"${gr_content}"
+  gr_content="$(printf "%q" "$gr_content" | sed -r 's/^\$.//' | sed -r 's/.$//' | sed -r 's/(["/])/\\\0/g')"
+fi
 
 if [ ! -f "./sources/$iso/source/$iso_source_basename" ]
 then
@@ -45,7 +59,7 @@ then
   fi
 fi
 
-sed -e "0,/menuentry/ s//${gr_content}\nmenuentry/" "./sources/$iso/tmp/grub.cfg" > "./sources/$iso/unpacked/boot/grub/grub.cfg"
+sed -e "0,/menuentry/ s//$gr_content\nmenuentry/" "./sources/$iso/tmp/grub.cfg" > "./sources/$iso/unpacked/boot/grub/grub.cfg"
 
 # exit 0
 
@@ -59,7 +73,7 @@ cp -rf ./server/$iso/* "./sources/$iso/unpacked/server"
 # building
 cd "./sources/$iso/unpacked"
 xorriso -as mkisofs -r \
-  -V 'Ubuntu 22.04 LTS AUTO (EFIBIOS)' \
+  -V "$title" \
   -o "../dist/$iso.iso" \
   --grub2-mbr "../tmp/BOOT/1-Boot-NoEmul.img" \
   -partition_offset 16 \
@@ -74,6 +88,6 @@ xorriso -as mkisofs -r \
   -e '--interval:appended_partition_2:::' \
   -no-emul-boot \
   .
-cd "../sources/$iso/dist"
+cd "../../$iso/dist"
 md5sum "$iso.iso" > SHA256SUMS
 cd ../../
