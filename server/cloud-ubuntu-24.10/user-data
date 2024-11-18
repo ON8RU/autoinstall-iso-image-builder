@@ -26,6 +26,7 @@ autoinstall:
 runcmd:
   # - wget https://github.com/xenserver/xe-guest-utilities/releases/download/v8.4.0/xe-guest-utilities_8.4.0-1_amd64.deb -O /tmp/xe-guest-utilities_8.4.0-1_amd64.deb
   - sudo dpkg -i /cdrom/server/xe-guest-utilities_8.4.0-1_amd64.deb
+  - sudo systemctl enable xe-linux-distribution
 
 
   # apt:
